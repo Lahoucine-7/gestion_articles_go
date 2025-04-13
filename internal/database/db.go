@@ -11,19 +11,19 @@ import (
 	"github.com/Lahoucine-7/gestion_articles_go/internal/models"
 )
 
-// DB est la variable globale qui stocke la connexion à la base de données.
+// DB est la variable globale qui contient la connexion à PostgreSQL.
 var DB *gorm.DB
 
-// InitDB initialise la connexion à PostgreSQL et lance l'auto-migration du modèle Article.
-// Il construit le Data Source Name (DSN) à partir des variables d'environnement.
+// InitDB initialise la connexion à la base de données en construisant le DSN à partir des variables d'environnement,
+// puis effectue l'auto-migration du modèle Article.
 func InitDB() {
-	// Construction du DSN pour PostgreSQL.
+	// Construction du DSN (Data Source Name) pour se connecter à PostgreSQL.
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		os.Getenv("DB_HOST"),    // ex: localhost
-		os.Getenv("DB_USER"),    // ex: articles_admin
-		os.Getenv("DB_PASSWORD"),// ex: ton mot de passe
-		os.Getenv("DB_NAME"),    // ex: gestion_articles
-		os.Getenv("DB_PORT"),    // ex: 5432
+		os.Getenv("DB_HOST"),    // Ex: localhost
+		os.Getenv("DB_USER"),    // Ex: postgres (à améliorer pour utiliser un utilisateur dédié)
+		os.Getenv("DB_PASSWORD"),// Mot de passe
+		os.Getenv("DB_NAME"),    // Nom de la base, par ex. gestion_articles_test pour les tests
+		os.Getenv("DB_PORT"),    // Ex: 5432
 	)
 
 	// Ouverture de la connexion avec GORM.
@@ -33,7 +33,7 @@ func InitDB() {
 	}
 	DB = db
 
-	// Exécution de l'auto-migration pour créer ou mettre à jour la table articles.
+	// Auto-migration du schéma pour créer ou mettre à jour la table "articles" à partir du modèle Article.
 	if err := DB.AutoMigrate(&models.Article{}); err != nil {
 		log.Fatalf("Erreur lors de la migration: %v", err)
 	}

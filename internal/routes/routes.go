@@ -4,20 +4,20 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/Lahoucine-7/gestion_articles_go/internal/controllers"
-	swaggerFiles "github.com/swaggo/files"     // Fichiers Swagger embarqués
-	ginSwagger "github.com/swaggo/gin-swagger"   // Middleware pour Swagger
+	swaggerFiles "github.com/swaggo/files"   // Fichiers Swagger embarqués
+	ginSwagger "github.com/swaggo/gin-swagger" // Middleware pour Swagger
 )
 
-// SetupRoutes configure et retourne un routeur Gin avec toutes les routes de l'application.
+// SetupRoutes configure et retourne un routeur Gin intégrant l'ensemble des endpoints de l'application.
+// Il sert également le dossier statique "docs" pour permettre l'accès aux fichiers Swagger générés.
 func SetupRoutes() *gin.Engine {
-	// Création d'un nouveau routeur par défaut avec Logger et Recovery intégrés.
+	// Création d'un routeur Gin par défaut avec les middlewares Logger et Recovery.
 	router := gin.Default()
 
-	// Sert le dossier "docs" de façon statique pour rendre accessible swagger.json et les autres fichiers.
-	// Le chemin "docs" est relatif à la racine d'exécution du projet.
+	// Sert le dossier "docs" statiquement (assurez-vous d'exécuter l'application depuis la racine du projet).
 	router.Static("/docs", "./docs")
 
-	// Configuration des routes pour la gestion des articles.
+	// Groupement des routes pour la gestion des articles.
 	articleRoutes := router.Group("/articles")
 	{
 		articleRoutes.POST("/", controllers.CreateArticle)
@@ -27,8 +27,8 @@ func SetupRoutes() *gin.Engine {
 		articleRoutes.DELETE("/:id", controllers.DeleteArticle)
 	}
 
-	// Configuration de la route pour Swagger.
-	// On utilise CustomWrapHandler avec une URL absolue pour pointer vers swagger.json dans le dossier "docs".
+	// Configuration de la route pour la documentation Swagger.
+	// On utilise CustomWrapHandler pour spécifier l'URL absolue du fichier swagger.json.
 	router.GET("/swagger/*any", ginSwagger.CustomWrapHandler(&ginSwagger.Config{
 		URL: "http://localhost:8080/docs/swagger.json",
 	}, swaggerFiles.Handler))

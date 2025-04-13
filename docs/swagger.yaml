@@ -1,0 +1,186 @@
+definitions:
+  models.Article:
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      published_date:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /articles:
+    get:
+      description: Récupère tous les articles enregistrés dans la base de données.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Liste des articles
+          schema:
+            items:
+              $ref: '#/definitions/models.Article'
+            type: array
+        "500":
+          description: Erreur lors de la récupération
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Récupérer la liste des articles
+      tags:
+      - Articles
+    post:
+      consumes:
+      - application/json
+      description: Crée un nouvel article en enregistrant le titre, le contenu, l'auteur
+        et la date de publication.
+      parameters:
+      - description: Les données de l'article à créer
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/models.Article'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Article créé avec succès
+          schema:
+            $ref: '#/definitions/models.Article'
+        "400":
+          description: Erreur de validation des données
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erreur lors de la création de l'article
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Créer un nouvel article
+      tags:
+      - Articles
+  /articles/{id}:
+    delete:
+      description: Supprime un article identifié par son ID de la base de données.
+      parameters:
+      - description: ID de l'article
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Article supprimé
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: ID invalide
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erreur lors de la suppression
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Supprimer un article
+      tags:
+      - Articles
+    get:
+      description: Récupère les détails d'un article en se basant sur l'ID fourni
+        dans l'URL.
+      parameters:
+      - description: ID de l'article
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Détails de l'article
+          schema:
+            $ref: '#/definitions/models.Article'
+        "400":
+          description: ID invalide
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Article non trouvé
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Récupérer un article par son ID
+      tags:
+      - Articles
+    put:
+      consumes:
+      - application/json
+      description: Met à jour un article identifié par son ID en utilisant les données
+        fournies dans le corps de la requête.
+      parameters:
+      - description: ID de l'article
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Données mises à jour pour l'article
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/models.Article'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Article mis à jour
+          schema:
+            $ref: '#/definitions/models.Article'
+        "400":
+          description: ID invalide ou erreur de validation
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Article non trouvé
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erreur lors de la mise à jour
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Mettre à jour un article existant
+      tags:
+      - Articles
+swagger: "2.0"
